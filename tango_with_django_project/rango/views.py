@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from rango.models import Category, Page
+from rango.models import Page
 
 from datetime import datetime
 
@@ -18,9 +19,7 @@ def visitor_cookie_handler(request):
     # If the cookie exists, the value returned is casted to an integer.
     # If the cookie doesn't exist, then the default value of 1 is used.
     visits = int(get_server_side_cookie(request, 'visits', '1'))
-
     last_visit_cookie = get_server_side_cookie(request, 'last_visit', str(datetime.now()) )
-
     last_visit_time = datetime.strptime(last_visit_cookie[:-7], "%Y-%m-%d %H:%M:%S")
     #last_visit_time = datetime.now()
     # If it's been more than a day since the last visit...
@@ -40,23 +39,14 @@ def visitor_cookie_handler(request):
 
 def index(request):
     #context_dict = {'boldmessage': "Crunchie, creamy, cookie, candy, cupcake!"}
-
     request.session.set_test_cookie()
-
     category_list = Category.objects.order_by('-likes')[:5]
-
     page_list = Page.objects.order_by('-views')[:5]
-
     context_dict = {'categories': category_list, 'pages': page_list}
-
     visitor_cookie_handler(request)
-
     context_dict['visits'] = request.session['visits']
-
     print(request.session['visits'])
-
     response = render(request, 'rango/index.html', context=context_dict)
-
     return response
 
 
@@ -66,7 +56,6 @@ def about(request):
         request.session.delete_test_cookie()
     # To complete the exercise in chapter 4, we need to remove the following line
     # return HttpResponse("Rango says here is the about page. <a href='/rango/'>View index page</a>")
-
     # and replace it with a pointer to ther about.html template using the render method
     return render(request, 'rango/about.html',{})
 
@@ -97,22 +86,6 @@ def show_category(request, category_name_slug):
     except Category.DoesNotExist:
         context_dict['category'] = None
         context_dict['pages'] = None
-
-
-    # create a default query based on the category name
-    # to be shown in the search box
-    context_dict['query'] = category.name
-
-    result_list = []
-    if request.method == 'POST':
-        query = request.POST['query'].strip()
-        if query:
-            # Run our Webhose function to get the results list!
-            result_list = run_query(query)
-            context_dict['query'] = query
-    context_dict['result_list'] = result_list
-
-
     # Go render the response and return it to the client.
     return render(request, 'rango/category.html', context_dict)
 

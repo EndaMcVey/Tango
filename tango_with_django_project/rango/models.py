@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.template.defaultfilters import slugify
 
 
 # Create your models here.
@@ -16,7 +17,7 @@ def save(self, *args, **kwargs):
     super(Category, self).save(*args, **kwargs)
 
 class Meta:
-    verbose_name_plural = 'Categories'
+    verbose_name_plural = 'categories'
 
 def __str__(self): # For Python 2, use __unicode__ too
     return self.name
