@@ -1,11 +1,14 @@
 {% extends 'rango/base.html' %}
 {% load staticfiles %}
-{% block page_title %}Index{% endblock %}
+
+{% block page_title %}
+  Rango
+{% endblock %}
 
 {% block body_block %}
 
 <body>
-  <h1>Rango says...</h1>
+  <h1>Rango says ...</h1>
   <div>
 
   {% if user.is_authenticated %}
@@ -28,7 +31,6 @@
     <strong>There are no categories present.</strong>
     {% endif %} </div>
   <div>
-
 
     <div>
     <h4>Most Viewed Pages</h4>
