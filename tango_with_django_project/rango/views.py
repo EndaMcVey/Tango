@@ -174,9 +174,11 @@ def user_login(request):
     else:
         return render(request, 'rango/login.html', {})
 
-@login_required
 def restricted(request):
-    return render(request, 'rango/restricted.html', {})
+        if not request.user.is_authenticated():
+            return render(request, 'rango/login.html', {})
+        else:
+            return render(request, 'rango/restricted.html', {})
 
 @login_required
 def user_logout(request):
